@@ -9,16 +9,15 @@ module challenge::day_02 {
     #[test_only]
     use std::unit_test::assert_eq;
 
-    // TODO: Write a function called 'sum' that takes two u64 numbers
-    // and returns their sum
-    // public fun sum(a: u64, b: u64): u64 {
-    //     // Your code here
-    // }
+    // Görev 1: İki u64 sayısını toplayan 'sum' fonksiyonu
+    public fun sum(a: u64, b: u64): u64 {
+        a + b
+    }
 
-    // TODO: Write a test function that checks sum(1, 2) == 3
-    // #[test]
-    // fun test_sum() {
-    //     // Your code here
-    // }
+    // Görev 2: sum(1, 2)'nin 3'e eşit olduğunu kontrol eden test
+    #[test]
+    fun test_sum() {
+        let sonuc = sum(1, 2);
+        assert_eq!(sonuc, 3); 
+    }
 }
-
