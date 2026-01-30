@@ -5,21 +5,18 @@
 /// 2. Create a Habit struct
 /// 3. Write a constructor function
 
-module challenge::day_03 {
-    use std::vector;
+ module challenge::day_03 {
+    // GÖREV 1: 'Habit' (Alışkanlık) yapısı
+    public struct Habit has copy, drop {
+        name: vector<u8>, 
+        completed: bool, 
+    }
 
-    // TODO: Define a struct called 'Habit' with:
-    // - name: vector<u8> (we'll use String later)
-    // - completed: bool
-    // Add 'copy' and 'drop' abilities
-    // public struct Habit has copy, drop {
-    //     // Your fields here
-    // }
-
-    // TODO: Write a constructor function 'new_habit'
-    // that takes a name (vector<u8>) and returns a Habit
-    // public fun new_habit(name: vector<u8>): Habit {
-    //     // Your code here
-    // }
+    // GÖREV 2: Yeni alışkanlık oluşturan fonksiyon
+    public fun new_habit(name: vector<u8>): Habit {
+        Habit {
+            name: name,      
+            completed: false 
+        }
+    }
 }
-
