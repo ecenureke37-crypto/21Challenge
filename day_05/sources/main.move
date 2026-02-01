@@ -6,9 +6,9 @@
 /// 3. Write a function to mark a habit as completed
 
 module challenge::day_05 {
-    use std::vector;
 
-    // Copy from day_04
+    // YAPILAR (STRUCTS)
+
     public struct Habit has copy, drop {
         name: vector<u8>,
         completed: bool,
@@ -17,6 +17,8 @@ module challenge::day_05 {
     public struct HabitList has drop {
         habits: vector<Habit>,
     }
+
+    //FONKSİYONLAR
 
     public fun new_habit(name: vector<u8>): Habit {
         Habit {
@@ -35,15 +37,19 @@ module challenge::day_05 {
         vector::push_back(&mut list.habits, habit);
     }
 
-    // TODO: Write a function 'complete_habit' that:
-    // - Takes list: &mut HabitList and index: u64
-    // - Checks if index is valid (less than vector length)
-    // - If valid, marks that habit's completed field as true
-    // Use vector::length() to get the length
-    // Use vector::borrow_mut() to get a mutable reference to an element
-    // public fun complete_habit(list: &mut HabitList, index: u64) {
-    //     // Your code here
-    //     // Hint: if (index < length) { ... }
-    // }
-}
+    // GÖREV: Alışkanlığı tamamlandı olarak işaretle
+    public fun complete_habit(list: &mut HabitList, index: u64) {
+        // 1. Listenin uzunluğunu al
+        let len = vector::length(&list.habits);
 
+        // 2. Verilen index (sıra no) geçerli mi diye kontrol ediyoruz
+        // Örneğin listede 3 eleman varsa ama biz 5. elemanı istersek hata verir.
+        if (index < len) {
+            // 3. O sıradaki alışkanlığı değiştirilebilir (mutable) olarak alıyoruz
+            let habit_ref = vector::borrow_mut(&mut list.habits, index);
+            
+            // 4. Durumunu 'true' (tamamlandı) yapıyoruz
+            habit_ref.completed = true;
+        }
+    }
+}
