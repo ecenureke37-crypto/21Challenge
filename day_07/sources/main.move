@@ -6,12 +6,11 @@
 /// 3. Use assert! macro
 ///
 /// Note: You can copy code from day_06/sources/solution.move if needed
-
 module challenge::day_07 {
-    use std::vector;
     use std::string::{Self, String};
 
-    // Copy from day_06: Habit struct with String
+    // YAPILAR (STRUCTS)
+
     public struct Habit has copy, drop {
         name: String,
         completed: bool,
@@ -20,6 +19,7 @@ module challenge::day_07 {
     public struct HabitList has drop {
         habits: vector<Habit>,
     }
+    // FONKSİYONLAR
 
     public fun new_habit(name: String): Habit {
         Habit {
@@ -51,25 +51,33 @@ module challenge::day_07 {
         }
     }
 
-    // Note: assert! is a built-in macro in Move 2024 - no import needed!
+    // TESTLER
 
-    // TODO: Write a test 'test_add_habits' that:
-    // - Creates an empty list
-    // - Adds 1-2 habits
-    // - Checks that the list length is correct
-    // #[test]
-    // fun test_add_habits() {
-    //     // Your code here
-    //     // Use b"Exercise".to_string() to create a String
-    // }
+    // TEST 1: Listeye ekleme çalışıyor mu
+    #[test]
+    fun test_add_habits() {
+        let mut list = empty_list();
+        let habit = make_habit(b"Kod Yaz"); // 'b' harfi byte string demektir
 
-    // TODO: Write a test 'test_complete_habit' that:
-    // - Creates a list and adds a habit
-    // - Completes the habit
-    // - Checks that completed == true
-    // #[test]
-    // fun test_complete_habit() {
-    //     // Your code here
-    // }
+        add_habit(&mut list, habit);
+
+        // Listenin uzunluğu 1 olmalı. Değilse hata kodu '0' fırlat.
+        assert!(vector::length(&list.habits) == 1, 0);
+    }
+
+    // TEST 2: Tamamlama özelliği çalışıyor mu
+    #[test]
+    fun test_complete_habit() {
+        let mut list = empty_list();
+        let habit = make_habit(b"Su Ic");
+        
+        add_habit(&mut list, habit);
+
+        // 0. sıradaki alışkanlığı tamamla
+        complete_habit(&mut list, 0);
+
+        // Kontrol et: true oldu mu
+        let habit_ref = vector::borrow(&list.habits, 0);
+        assert!(habit_ref.completed == true, 1);
+    }
 }
-
