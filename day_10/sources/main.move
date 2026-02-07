@@ -10,7 +10,8 @@
 module challenge::day_10 {
     use std::string::String;
 
-    // Copy from day_09: TaskStatus enum and Task struct
+    // --- YAPILAR ve ENUM ---
+
     public enum TaskStatus has copy, drop {
         Open,
         Completed,
@@ -21,6 +22,8 @@ module challenge::day_10 {
         reward: u64,
         status: TaskStatus,
     }
+
+    // --- PUBLIC FONKSİYONLAR (Dışarıya Açık) ---
 
     public fun new_task(title: String, reward: u64): Task {
         Task {
@@ -34,18 +37,23 @@ module challenge::day_10 {
         task.status == TaskStatus::Open
     }
 
-    // TODO: Write a public function 'complete_task' that:
-    // - Takes task: &mut Task
-    // - Sets task.status = TaskStatus::Completed
-    // This should be public so users can call it
-    // public fun complete_task(task: &mut Task) {
-    //     // Your code here
-    // }
+    // GÖREV 1: Görevi tamamlayan PUBLIC fonksiyon
+    // Bu fonksiyon dışarıdan çağrılabilir, çünkü başında 'public' var.
+    public fun complete_task(task: &mut Task) {
+        task.status = TaskStatus::Completed;
+    }
 
-    // TODO: (Optional) Write a private helper function
-    // Private functions use 'fun' instead of 'public fun'
-    // They can only be called from within the same module
-    // BONUS: Add a public function that calls your private helper
-    //        (e.g. 'has_valid_reward' that internally calls 'internal_helper')
+    // --- PRIVATE FONKSİYONLAR (Gizli) ---
+
+    // GÖREV 2: Yardımcı Gizli Fonksiyon (BONUS)
+    // Başında 'public' YOK. Sadece bu dosya içindeki diğer fonksiyonlar kullanabilir.
+    fun check_reward_threshold(reward: u64): bool {
+        reward > 100 // Ödül 100'den büyük mü?
+    }
+
+    // Bu public fonksiyon, yukarıdaki gizli fonksiyonu kullanır.
+    public fun is_high_reward(task: &Task): bool {
+        // Gizli fonksiyonu buradan çağırıyoruz:
+        check_reward_threshold(task.reward)
+    }
 }
-
