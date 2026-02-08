@@ -10,10 +10,10 @@
 /// Related: Day 10 (Visibility), Day 12 (Building on TaskBoard)
 
 module challenge::day_11 {
-    use std::vector;
     use std::string::String;
 
-    // Copy from day_10: TaskStatus enum and Task struct
+    // --- ENUM ve STRUCTLAR ---
+
     public enum TaskStatus has copy, drop {
         Open,
         Completed,
@@ -24,6 +24,15 @@ module challenge::day_11 {
         reward: u64,
         status: TaskStatus,
     }
+
+    // GÖREV 1: TaskBoard (Görev Panosu) Yapısı
+    // Bu pano, kimin olduğunu (owner) ve içindeki görevleri (tasks) tutar.
+    public struct TaskBoard has drop {
+        owner: address,       // Panonun sahibi (Cüzdan adresi)
+        tasks: vector<Task>,  // Görev listesi
+    }
+
+    // --- FONKSİYONLAR ---
 
     public fun new_task(title: String, reward: u64): Task {
         Task {
@@ -37,26 +46,18 @@ module challenge::day_11 {
         task.status = TaskStatus::Completed;
     }
 
-    // TODO: Define a struct called 'TaskBoard' with:
-    // - owner: address (the address that owns this board)
-    // - tasks: vector<Task>
-    // Add 'drop' ability
-    // public struct TaskBoard has drop {
-    //     // Your fields here
-    // }
+    // GÖREV 2: Yeni Pano Oluşturma
+    // Sahip adresini alır, boş bir pano oluşturur.
+    public fun new_board(owner: address): TaskBoard {
+        TaskBoard {
+            owner,
+            tasks: vector::empty(),
+        }
+    }
 
-    // TODO: Write a constructor 'new_board' that takes owner: address
-    // and returns an empty TaskBoard
-    // public fun new_board(owner: address): TaskBoard {
-    //     // Your code here
-    // }
-
-    // TODO: Write a function 'add_task' that:
-    // - Takes board: &mut TaskBoard and task: Task
-    // - Adds the task to the board's vector
-    // The task becomes part of the board's data
-    // public fun add_task(board: &mut TaskBoard, task: Task) {
-    //     // Your code here
-    // }
+    // GÖREV 3: Panoya Görev Ekleme
+    // Oluşturduğumuz Task'i, Board'un içindeki listeye iter.
+    public fun add_task(board: &mut TaskBoard, task: Task) {
+        vector::push_back(&mut board.tasks, task);
+    }
 }
-
