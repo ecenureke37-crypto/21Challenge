@@ -6,17 +6,14 @@
 /// 3. Practice test organization
 ///
 /// Note: You can copy code from day_13/sources/solution.move if needed
-
 module challenge::day_14 {
-    use std::vector;
-    use std::string::String;
-    use std::option::{Self, Option};
-
+    use std::string::{Self, String};
+    
+    // Testlerde işimize yarayacak yardımcı kütüphaneler
     #[test_only]
-    use std::unit_test::assert_eq;
-    use std::string;
 
-    // Copy from day_13: All structs and functions
+    // --- YAPILAR
+
     public enum TaskStatus has copy, drop {
         Open,
         Completed,
@@ -32,6 +29,8 @@ module challenge::day_14 {
         owner: address,
         tasks: vector<Task>,
     }
+
+    // FONKSİYONLAR
 
     public fun new_task(title: String, reward: u64): Task {
         Task {
@@ -82,27 +81,52 @@ module challenge::day_14 {
         count
     }
 
-    // Note: assert! is a built-in macro in Move 2024 - no import needed!
+    //  TESTLER (HAFTANIN FİNALİ)
 
-    // TODO: Write at least 3 tests:
-    // 
-    // Test 1: test_create_board_and_add_task
-    // - Create a board with an owner
-    // - Add a task
-    // - Verify the task was added
-    // 
-    // Test 2: test_complete_task
-    // - Create board, add tasks
-    // - Complete a task
-    // - Verify completed_count is correct
-    // 
-    // Test 3: test_total_reward
-    // - Create board, add multiple tasks with different rewards
-    // - Verify total_reward is correct
-    // 
-    // #[test]
-    // fun test_create_board_and_add_task() {
-    //     // Your code here
-    // }
+    // TEST 1: Pano oluşturma ve görev ekleme
+    #[test]
+    fun test_create_board_and_add_task() {
+        // Sahte bir kullanıcı adresi uyduralım (@0x1)
+        let owner = @0x1;
+        let mut board = new_board(owner);
+        
+        let task = new_task(string::utf8(b"Move Ogren"), 100);
+        add_task(&mut board, task);
+
+        // Listenin uzunluğu 1 olmalı
+        assert!(vector::length(&board.tasks) == 1, 0);
+    }
+
+    // TEST 2: Görev tamamlama ve sayma
+    #[test]
+    fun test_complete_task() {
+        let owner = @0x2;
+        let mut board = new_board(owner);
+        
+        // Görevi ekle
+        let task = new_task(string::utf8(b"Kod Yaz"), 50);
+        add_task(&mut board, task);
+
+        // Listeden görevi al ve tamamla
+        // (Not: Listeden değiştirmek için 'borrow_mut' kullanıyoruz)
+        let task_ref = vector::borrow_mut(&mut board.tasks, 0);
+        complete_task(task_ref);
+
+        // Tamamlanan görev sayısı 1 olmalı
+        assert!(completed_count(&board) == 1, 1);
+    }
+
+    // TEST 3: Toplam ödül hesabı
+    #[test]
+    fun test_total_reward() {
+        let owner = @0x3;
+        let mut board = new_board(owner);
+
+        // İki farklı görev ekleyelim: 100 + 50 puan
+        add_task(&mut board, new_task(string::utf8(b"Gorev 1"), 100));
+        add_task(&mut board, new_task(string::utf8(b"Gorev 2"), 50));
+
+        // Toplam 150 olmalı
+        assert!(total_reward(&board) == 150, 2);
+    }
 }
-
